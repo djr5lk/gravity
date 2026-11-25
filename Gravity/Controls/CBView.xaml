@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="Gravity.CBView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="300"
+             Tag="{Binding}"
+             IsVisibleChanged="UserControl_IsVisibleChanged">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+                Value="{Binding RelativeSource={RelativeSource Self}, 
+                       Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Border Background="LightGray" 
+        BorderBrush="Black" 
+        BorderThickness="2" 
+        CornerRadius="10" 
+        Padding="5"
+        Margin="2,2,2,2">
+        <Grid>
+            <StackPanel>
+                <TextBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontSize="14" Text="{Binding Path=Name,ValidatesOnExceptions=True}" Margin="5,2,5,2" />
+                <Grid HorizontalAlignment="Center" Height="280" Width="280" Background="Black" Margin="5,2,5,2">
+                    <Viewport3D Name="CelestialBodyViewport3D" MouseLeftButtonUp="CelestialBodyViewport3D_MouseLeftButtonUp">
+                        <Viewport3D.Camera>
+                            <PerspectiveCamera Position="{Binding Path=SelectorCameraPosition}" UpDirection="{Binding Path=SelectorCameraUpDirection}" LookDirection="{Binding Path=SelectorCameraLookDirection}" FieldOfView="{Binding Path=SelectorCameraFieldOfView}" />
+                        </Viewport3D.Camera>
+                        <Viewport3D.Children>
+                            <ModelVisual3D>
+                                <ModelVisual3D.Content>
+                                    <DirectionalLight Color="White" Direction="0,0,-1" />
+                                </ModelVisual3D.Content>
+                            </ModelVisual3D>
+                            <ModelVisual3D Content="{Binding Path=ModelRotationOnly}">
+                            </ModelVisual3D>
+                        </Viewport3D.Children>
+                    </Viewport3D>
+                    <ScrollViewer Name="BrushScroll" Visibility="Collapsed">
+                        <ItemsControl Name="BrushList">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Rectangle Name="BrushSelector"  Height="40" Width="40" Margin="3,3,3,3" Stroke="Black" Fill="{Binding Path=Brush}" ToolTip="{Binding Path=Name}" MouseLeftButtonUp="BrushSelector_MouseLeftButtonUp" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" Margin="5,2,5,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="{Binding Path=SizeName}" />
+                    <TextBox Grid.Column="1" Text="{Binding Path=Size, ValidatesOnExceptions=True}" />
+                    <Label Grid.Column="2" Content="Mass:" />
+                    <TextBox Grid.Column="3" Text="{Binding Path=Mass,ValidatesOnExceptions=True}" />
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" Margin="5,2,5,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Rotation Speed:" />
+                    <TextBox Grid.Column="1" Text="{Binding Path=RotationSpeed, ValidatesOnExceptions=True}" />
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" Margin="5,2,5,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Location" />
+                    <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Velocity" />
+                    <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="X" />
+                    <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Y" />
+                    <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Z" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=X,ValidatesOnExceptions=True}" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding Path=XVel,ValidatesOnExceptions=True}" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=Y,ValidatesOnExceptions=True}" />
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Path=YVel,ValidatesOnExceptions=True}" />
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=Z,ValidatesOnExceptions=True}" />
+                    <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding Path=ZVel,ValidatesOnExceptions=True}" />
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" Margin="5,2,5,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,5,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Orbit:" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="Body:" />
+                        <ComboBox Grid.Row="1" Grid.Column="1" Name="cbOther" HorizontalAlignment="Stretch" IsEditable="True" IsReadOnly="True" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="Radius:" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Name="txtOrbitRadius" HorizontalAlignment="Stretch" />
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <Button Grid.Row="0" Name="btnUpLeft" Click="btnUpLeft_Click" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="↖" />
+                        <Button Grid.Row="0" Name="btnUp" Click="btnUp_Click" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="↑" />
+                        <Button Grid.Row="0" Name="btnUpRight" Click="btnUpRight_Click" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="↗" />
+                        <Button Grid.Row="1" Name="btnLeft" Click="btnLeft_Click" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="←" />
+                        <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="Dir." />
+                        <Button Grid.Row="1" Name="btnRight" Click="btnRight_Click" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="→" />
+                        <Button Grid.Row="2" Name="btnDownLeft" Click="btnDownLeft_Click" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="↙" />
+                        <Button Grid.Row="2" Name="btnDown" Click="btnDown_Click" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="↓" />
+                        <Button Grid.Row="2" Name="btnDownRight" Click="btnDownRight_Click" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" Content="↘" />
+                    </Grid>
+                </Grid>
+                <Button Name="btnExplode" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="btnExplode_Click">
+                    <TextBlock Height="Auto" TextWrapping="Wrap" Text="Explode" />
+                </Button>
+                <Button Name="btnConfirmAdd" HorizontalAlignment="Stretch" Margin="5,2,5,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Add to Universe" Visibility="Collapsed" Click="btnConfirmAdd_Click"/>
+                <Button Name="btnCancel" HorizontalAlignment="Stretch" Margin="5,2,5,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Cancel" Visibility="Collapsed" Click="btnCancel_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
